@@ -72,7 +72,7 @@ class Aquarium:
     #checks to make sure the destination node a fish trys to move to is valid
     def checkValidMove(self, destNode):
         x, y = destNode
-        return (x > 0 and x < self.size and y > 0 and y < self.size)
+        return (x >= 0 and x < self.size and y >= 0 and y < self.size)
             
     #finds the fishes visionGrid, gives it to the fish to make a move, then validates
     #and moves the fish to the destination node, before finally checking overlaps at
@@ -81,6 +81,7 @@ class Aquarium:
         visionGrid = self.getVision(fish)
         destNode = fish.getMove(visionGrid)
         if self.checkValidMove(destNode):
+            print("Aquarium Dest: ", destNode)
             oldPos = fish.loc
             fish.loc = destNode
             x, y = oldPos

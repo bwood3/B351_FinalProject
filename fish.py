@@ -7,8 +7,8 @@ class Fish:
     ALIVE = 1
     DEAD = 0
     #for movements (row, col)
-    UP = (0, 1)
-    DOWN = (0, -1)
+    UP = (0, -1)
+    DOWN = (0, 1)
     RIGHT = (1, 0)
     LEFT = (-1, 0)
     NORTHEAST = tuple(map(sum, zip(UP, RIGHT)))
@@ -31,10 +31,10 @@ class Fish:
         if (len(self.movementQueue) > 0):
             move = self.movementQueue.pop(0)
             return self.destinationLoc(move)
-
         return self.loc
 
     def translateMove(self, curLoc, delta):
+        print("Fish Destination: ", tuple(map(sum, zip(curLoc, delta))))
         return tuple(map(sum, zip(curLoc, delta)))
 
     #A*
