@@ -66,4 +66,4 @@ class Fish:
             print("Fish Parent Class Error -> no valid move direction passed to updateLoc")
             quit()
 
-        self.loc = self.translateMove(self.loc, delta)
+        return self.translateMove(self.loc, delta)
