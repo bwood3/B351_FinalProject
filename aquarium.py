@@ -1,0 +1,102 @@
+import random
+
+class Aquarium:
+
+    def __init__(self, size, fishes):
+        self.size = size #Size N of the grid
+        self.fishes = fishes #contains all fish, living and dead
+        self.grid = self.createGrid(size, fishes) #contains living fish at their respective positions
+        
+    #Used to create a new N*N grid of the given size,
+    #then inserts the list of fish into their respective position
+    def createGrid(self, size, fishes):
+        grid = [ [ list() for y in range(0, size)] for x in range(0, size)]
+        #for fish in fishes: #waiting on fish class implementation
+            #x, y = fish.position
+            #grid[x][y].append(fish)
+        for i in range(0, len(fishes)):
+            x = random.randrange(self.size)
+            y = random.randrange(self.size)
+            grid[x][y].append(fishes[i])
+        return grid
+
+    #prints a representation of the grid
+    def __repr__(self):
+        string = ""
+        for y in range(0, self.size):
+            for x in range(0, self.size):
+                if self.grid[x][y] == []:
+                    string += "[" + "] "
+                else:
+                    string += "[" + ', '.join(self.grid[x][y]) + "] "
+                if x == self.size - 1:
+                    print(string)
+                    string = ""
+        return string
+
+    #checks for overlapping fish on a given node. The largest tiered fish will
+    #eat all the others. This currently does not rechecked what fish can be eaten
+    #if the predator fish grows in size, thus may be eligible to eat other fish 
+    #that were once the same size as it.
+    #node is a tuple of integers in order (x, y)
+    def checkOverlap(self, node):
+        fishAtNode = list(self.grid[node[0]][node[1]])
+        maxTier = 0
+        for fish in fishAtNode:
+            if fish.tier > maxTier:
+                predator = fish
+                maxTier = fish.tier
+        for fish in list(fishAtNode):
+            if fish.tier == maxTier:
+                fishAtNode.remove(fish)
+        for fish in fishAtNode:
+            predator.eat(fish)
+            fish.terminated = 1
+            self.grid[node[0]][node[1]].remove(fish)
+
+    #returns the euclidean disntace between two nodes
+    def calc_euclidean_distance(self, node_a, node_b):
+        distance = 0
+        for a, b in zip(node_a, node_b):
+            distance += pow(a - b, 2)
+        distance = pow(distance, 0.5)
+        return distance   
+            
+    #return a copy of the grid with only what the fish can see
+    def getVision(self, fish):
+        visionRange = fish.vision #this is the integer value of how far the fish can see
+        visibleFish = []
+        for otherFish in self.fishes:
+            distance = calc_euclidean_distance(fish.loc, otherFish.loc)
+            if visionRange >= distance:
+                visibleFish.append(otherFish)
+        limitedGrid = self.createGrid(self.size, visibleFish)
+        return limitedGrid
+
+    #checks to make sure the destination node a fish trys to move to is valid
+    def checkValidMove(destNode):
+        x, y = destNode
+        return (x > 0 and x < self.size and y > 0 and y < self.size)
+            
+    #finds the fishes visionGrid, gives it to the fish to make a move, then validates
+    #and moves the fish to the destination node, before finally checking overlaps at
+    #destination
+    def moveFish(self, fish):
+        visionGrid = self.getVision(fish)
+        destNode = fish.getMove(visionGrid)
+        if checkValidMove(destNode):
+            oldPos = fish.position
+            fish.position = destNode
+            x, y = oldPos
+            grid[x][y].remove(fish)
+            x, y = destNode
+            grid[x][y].append(fish)
+            checkOverlap(destNode)
+
+    #This is the function called by main for every tick of the simulation.
+    #It updates all of the fish not dead.
+    def updateSim(self):
+        for fish in fishes:
+            if not fish.terminated:
+                self.moveFish(fish)
+        
