@@ -1,9 +1,11 @@
-from Aquarium import *
+from aquarium import Aquarium
 from fish import Fish
 
 if __name__ == '__main__':
     print("Running Main")
-    fishes = ["one fish", "two fish", "red fish", "bluefish"]
+    fishes = []
+    f = Fish((0,5))
+    fishes.append(f)
     aquarium = Aquarium(5, fishes)
     print(aquarium)
 

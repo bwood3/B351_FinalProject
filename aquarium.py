@@ -63,14 +63,14 @@ class Aquarium:
         visionRange = fish.vision #this is the integer value of how far the fish can see
         visibleFish = []
         for otherFish in self.fishes:
-            distance = calc_euclidean_distance(fish.loc, otherFish.loc)
+            distance = self.calc_euclidean_distance(fish.loc, otherFish.loc)
             if visionRange >= distance:
                 visibleFish.append(otherFish)
         limitedGrid = self.createGrid(self.size, visibleFish)
         return limitedGrid
 
     #checks to make sure the destination node a fish trys to move to is valid
-    def checkValidMove(destNode):
+    def checkValidMove(self, destNode):
         x, y = destNode
         return (x > 0 and x < self.size and y > 0 and y < self.size)
             
@@ -80,19 +80,19 @@ class Aquarium:
     def moveFish(self, fish):
         visionGrid = self.getVision(fish)
         destNode = fish.getMove(visionGrid)
-        if checkValidMove(destNode):
+        if self.checkValidMove(destNode):
             oldPos = fish.loc
             fish.loc = destNode
             x, y = oldPos
-            grid[x][y].remove(fish)
+            self.grid[x][y].remove(fish)
             x, y = destNode
-            grid[x][y].append(fish)
-            checkOverlap(destNode)
+            self.grid[x][y].append(fish)
+            self.checkOverlap(destNode)
 
     #This is the function called by main for every tick of the simulation.
     #It updates all of the fish not dead.
     def updateSim(self):
-        for fish in fishes:
+        for fish in self.fishes:
             if not fish.terminated:
                 self.moveFish(fish)
         
