@@ -5,19 +5,15 @@ class Aquarium:
     def __init__(self, size, fishes):
         self.size = size #Size N of the grid
         self.fishes = fishes #contains all fish, living and dead
-        self.grid = self.createGrid(size, fishes) #contains living fish at their respective positions
+        self.grid = self.createGrid(size, fishes) #contains living fish at their respective locations
         
     #Used to create a new N*N grid of the given size,
-    #then inserts the list of fish into their respective position
+    #then inserts the list of fish into their respective location
     def createGrid(self, size, fishes):
         grid = [ [ list() for y in range(0, size)] for x in range(0, size)]
-        #for fish in fishes: #waiting on fish class implementation
-            #x, y = fish.position
-            #grid[x][y].append(fish)
-        for i in range(0, len(fishes)):
-            x = random.randrange(self.size)
-            y = random.randrange(self.size)
-            grid[x][y].append(fishes[i])
+        for fish in fishes:
+            x, y = fish.loc
+            grid[x][y].append(fish)
         return grid
 
     #prints a representation of the grid
@@ -85,8 +81,8 @@ class Aquarium:
         visionGrid = self.getVision(fish)
         destNode = fish.getMove(visionGrid)
         if checkValidMove(destNode):
-            oldPos = fish.position
-            fish.position = destNode
+            oldPos = fish.loc
+            fish.loc = destNode
             x, y = oldPos
             grid[x][y].remove(fish)
             x, y = destNode
