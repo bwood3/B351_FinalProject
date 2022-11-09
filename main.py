@@ -1,4 +1,4 @@
-from Aquarium import *
+from aquarium import *
 from fish import Fish
 
 if __name__ == '__main__':

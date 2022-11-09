@@ -27,37 +27,10 @@ class Fish:
         self.movementQueue = self.path() #a list movements for a path fish will take (A* for training fish, pre-defined for non-training fish)
 
     #in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
-    def moveFish(self):
+    def getMove(self):
         if (len(self.movementQueue) > 0):
             move = self.movementQueue.pop(0)
             self.updateLoc(move)
-
-    # all fish will have a update method (in which their location is changed if that fish is moving, else it stays the same)
-    # move direction is a tuple
-    def updateLoc(self, moveDirection):
-
-        if moveDirection == self.UP:
-            delta = self.UP
-        elif moveDirection == self.DOWN:
-            delta = self.DOWN
-        elif moveDirection == self.RIGHT:
-            delta = self.RIGHT
-        elif moveDirection == self.LEFT:
-            delta = self.LEFT
-        elif moveDirection == self.NORTHEAST:
-            delta = self.NORTHEAST
-        elif moveDirection == self.NORTHWEST:
-            delta = self.NORTHWEST
-        elif moveDirection == self.SOUTHEAST:
-            delta = self.SOUTHEAST
-        elif moveDirection == self.SOUTHWEST:
-            delta = self.SOUTHWEST
-        else:
-            delta = "fail"
-            print("Fish Parent Class Error -> no valid move direction passed to updateLoc")
-            quit()
-
-        self.loc = self.translateMove(self.loc, delta)
 
     def translateMove(self, curLoc, delta):
         return tuple(map(sum, zip(curLoc, delta)))
@@ -65,3 +38,31 @@ class Fish:
     #A*
     def path(self):
         pass
+
+
+  # # all fish will have a update method (in which their location is changed if that fish is moving, else it stays the same)
+    # # move direction is a tuple
+    # def updateLoc(self, moveDirection):
+    #
+    #     if moveDirection == self.UP:
+    #         delta = self.UP
+    #     elif moveDirection == self.DOWN:
+    #         delta = self.DOWN
+    #     elif moveDirection == self.RIGHT:
+    #         delta = self.RIGHT
+    #     elif moveDirection == self.LEFT:
+    #         delta = self.LEFT
+    #     elif moveDirection == self.NORTHEAST:
+    #         delta = self.NORTHEAST
+    #     elif moveDirection == self.NORTHWEST:
+    #         delta = self.NORTHWEST
+    #     elif moveDirection == self.SOUTHEAST:
+    #         delta = self.SOUTHEAST
+    #     elif moveDirection == self.SOUTHWEST:
+    #         delta = self.SOUTHWEST
+    #     else:
+    #         delta = "fail"
+    #         print("Fish Parent Class Error -> no valid move direction passed to updateLoc")
+    #         quit()
+    #
+    #     self.loc = self.translateMove(self.loc, delta)
