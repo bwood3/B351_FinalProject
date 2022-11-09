@@ -28,8 +28,9 @@ class Fish:
 
     #in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
     def moveFish(self):
-        move = self.movementQueue.pop(0)
-        self.updateLoc(move)
+        if (len(self.movementQueue) > 0):
+            move = self.movementQueue.pop(0)
+            self.updateLoc(move)
 
     # all fish will have a update method (in which their location is changed if that fish is moving, else it stays the same)
     # move direction is a tuple
