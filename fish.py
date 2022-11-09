@@ -37,7 +37,7 @@ class Fish:
 
     #A*
     def path(self):
-        pass
+        return [self.UP, self.RIGHT, self.DOWN, self.SOUTHWEST]
 
     # # all fish will have a update method (in which their location is changed if that fish is moving, else it stays the same)
     # # move direction is a tuple
