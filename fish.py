@@ -17,7 +17,7 @@ class Fish:
     SOUTHWEST = tuple(map(sum, zip(DOWN, LEFT)))
 
     # all fish will have various attributes (initialized by aquarium class)
-    def __init__(self, loc,  vision, speed, riskTolerance):
+    def __init__(self, loc, vision, speed, riskTolerance):
         self.loc = loc
         self.vision = vision
         self.speed = speed
