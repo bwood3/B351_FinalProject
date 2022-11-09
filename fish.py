@@ -27,7 +27,7 @@ class Fish:
         self.movementQueue = self.path() #a list movements for a path fish will take (A* for training fish, pre-defined for non-training fish)
 
     #in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
-    def getMove(self):
+    def getMove(self, visionGrid):
         if (len(self.movementQueue) > 0):
             move = self.movementQueue.pop(0)
             return self.destinationLoc(move)
@@ -67,3 +67,6 @@ class Fish:
             quit()
 
         return self.translateMove(self.loc, delta)
+
+    def __repr__(self):
+        return "fish"

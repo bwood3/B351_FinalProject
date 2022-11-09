@@ -24,7 +24,7 @@ class Aquarium:
                 if self.grid[x][y] == []:
                     string += "[" + "] "
                 else:
-                    string += "[" + ', '.join(self.grid[x][y]) + "] "
+                    string += "[" + ''.join(str(self.grid[x][y])) + "] "
                 if x == self.size - 1:
                     print(string)
                     string = ""
@@ -39,15 +39,15 @@ class Aquarium:
         fishAtNode = list(self.grid[node[0]][node[1]])
         maxTier = 0
         for fish in fishAtNode:
-            if fish.tier > maxTier:
+            if fish.score > maxTier:
                 predator = fish
-                maxTier = fish.tier
+                maxTier = fish.score
         for fish in list(fishAtNode):
-            if fish.tier == maxTier:
+            if fish.score == maxTier:
                 fishAtNode.remove(fish)
         for fish in fishAtNode:
             predator.eat(fish)
-            fish.terminated = 1
+            fish.status = 0
             self.grid[node[0]][node[1]].remove(fish)
 
     #returns the euclidean disntace between two nodes
@@ -93,6 +93,6 @@ class Aquarium:
     #It updates all of the fish not dead.
     def updateSim(self):
         for fish in self.fishes:
-            if not fish.terminated:
+            if fish.status:
                 self.moveFish(fish)
         
