@@ -17,33 +17,42 @@ class Fish:
     SOUTHWEST = tuple(map(sum, zip(DOWN, LEFT)))
 
     # all fish will have various attributes (initialized by aquarium class)
-    def __init__(self, loc, vision, speed, riskTolerance):
+    # if we are using our training fish, movement pattern will be defined by A*
+    # if we are not using training fish, it will be pre-defined as argument
+    def __init__(self, loc, vision, speed, riskTolerance, movementPattern = None):
         self.loc = loc
         self.vision = vision
         self.speed = speed
         self.riskTolerance = riskTolerance
         self.status = self.ALIVE
         self.score = 0
-        self.movementQueue = self.path() #a list movements for a path fish will take (A* for training fish, pre-defined for non-training fish)
+
+        if(movementPattern == None):
+            self.movementQueue = self.path()
+        else:
+            self.movementQueue = movementPattern
 
     #in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
     def getMove(self, visionGrid):
+
+        #todo add an interpretation for visionGrid
+        # check if current grid interferes with current path (present in movementQueue)
+
         if (len(self.movementQueue) > 0):
             move = self.movementQueue.pop(0)
-            return self.destinationLoc(move)
+            return self.myDest(move)
         return self.loc
 
     def translateMove(self, curLoc, delta):
         print("Fish Destination: ", tuple(map(sum, zip(curLoc, delta))))
         return tuple(map(sum, zip(curLoc, delta)))
 
-    #A*
+    #A list movements for a path training fish will take (A* for training fish, pre-defined for non-training fish)
     def path(self):
-        return [self.UP, self.RIGHT, self.DOWN, self.SOUTHWEST]
+        return [self.UP, self.RIGHT, self.DOWN, self.NORTHEAST, self.NORTHEAST, self.SOUTHEAST, self.RIGHT, self.RIGHT] # demo code
 
-    # all fish will have a update method (in which their location is changed if that fish is moving, else it stays the same)
     # move direction is a tuple
-    def destinationLoc(self, moveDirection):
+    def myDest(self, moveDirection):
 
         if moveDirection == self.UP:
             delta = self.UP
@@ -63,7 +72,7 @@ class Fish:
             delta = self.SOUTHWEST
         else:
             delta = "fail"
-            print("Fish Parent Class Error -> no valid move direction passed to updateLoc")
+            print("Fish Class Error -> {0} is not a valid move direction".format(moveDirection))
             quit()
 
         return self.translateMove(self.loc, delta)
