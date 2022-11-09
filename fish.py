@@ -39,8 +39,7 @@ class Fish:
     def path(self):
         pass
 
-
-  # # all fish will have a update method (in which their location is changed if that fish is moving, else it stays the same)
+   # # all fish will have a update method (in which their location is changed if that fish is moving, else it stays the same)
     # # move direction is a tuple
     # def updateLoc(self, moveDirection):
     #
