@@ -48,7 +48,7 @@ class Aquarium:
             if fish.score == maxTier:
                 fishAtNode.remove(fish)
         for fish in fishAtNode:
-            sustanence = min(10, fish.score)
+            sustanence = max(10, fish.score)
             predator.score += sustanence
             fish.status = 0
             self.grid[node[0]][node[1]].remove(fish)
@@ -84,7 +84,6 @@ class Aquarium:
         visionGrid = self.getVision(fish)
         destNode = fish.getMove(visionGrid)
         if self.checkValidMove(destNode):
-            print("Aquarium Dest: ", destNode) #for demo purposes only
             oldPos = fish.loc
             fish.loc = destNode
             x, y = oldPos
@@ -92,8 +91,6 @@ class Aquarium:
             x, y = destNode
             self.grid[x][y].append(fish)
             self.checkOverlap(destNode)
-        else:
-            print("Invalid Move") #for demo purposes only
 
     #This is the function called by main for every tick of the simulation.
     #It updates all of the fish not dead.
