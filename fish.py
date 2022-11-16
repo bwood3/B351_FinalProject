@@ -43,7 +43,6 @@ class Fish:
         return self.randomMove(visionGrid)
 
     def translateMove(self, curLoc, delta):
-        print("Fish Destination: ", tuple(map(sum, zip(curLoc, delta))))
         return tuple(map(sum, zip(curLoc, delta)))
 
     # A list movements for a path training fish will take (A* for training fish, pre-defined for non-training fish)
