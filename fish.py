@@ -86,11 +86,12 @@ class Fish:
     def findAdjacencies(self, loc, visionGrid):
         width = len(visionGrid)
         height = len(visionGrid[0])
-        allDirections = [self.UP, self.DOWN, self.LEFT, self.RIGHT, self.NORTHEAST, self.NORTHWEST, self.SOUTHEAST, self.SOUTHWEST]
+        allDirections = [self.UP, self.DOWN, self.LEFT, self.RIGHT, self.NORTHEAST, self.NORTHWEST, self.SOUTHEAST,
+                         self.SOUTHWEST]
         adjacencies = list()
         for direction in allDirections:
             adjacent = self.translateMove(loc, direction)
-            if(adjacent[0] >= 0 and adjacent[0] < width and adjacent[1] >= 0 and adjacent[1] < height):
+            if (adjacent[0] >= 0 and adjacent[0] < width and adjacent[1] >= 0 and adjacent[1] < height):
                 adjacencies.append(adjacent)
         return adjacencies
 
@@ -110,9 +111,6 @@ class Fish:
         return Fish(loc, vision, speed, riskAwareness)
 
     def __repr__(self):
-<<<<<<< HEAD
-        return "fish"
-=======
         return "fish"
 
 
@@ -151,5 +149,3 @@ class Node:
         if not self._is_valid_operand(other):
             return NotImplemented
         return (self.depth + self.value) >= (other.depth + other.value)
-
->>>>>>> ec4080daf5b5de3cf32b928fa692bc4d43460a40
