@@ -5,11 +5,11 @@ if __name__ == '__main__':
     print("Running Main")
     origin = (10, 10)  # starting point for the training fish
     fishes = []
-    possibleX = [0, 2, 4, 6, 8, 12, 14, 16, 18, 20]
-    possibleY = [0, 2, 4, 6, 8, 12, 14, 16, 18, 20]
+    possibleX = [1, 3, 5, 7, 13, 15, 17, 19]
+    possibleY = [1, 3, 5, 7, 13, 15, 17, 19]
     for i in range(0, 10):
-        x = random.randint(0, 9)
-        y = random.randint(0, 9)
+        x = random.randint(0, 7)
+        y = random.randint(0, 7)
         loc = (possibleX[x], possibleY[y])
         f = Fish.randomFishGenerator(loc)
         fishes.append(f)
