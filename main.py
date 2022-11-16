@@ -12,11 +12,9 @@ if __name__ == '__main__':
     fishes.append(f)
     aquarium = Aquarium(6, fishes)
 
-    for i in range(len(f.movementQueue)):
-        aquarium.updateSim()
-        print(aquarium)
-
     for i in range(1, 10):
-        
+        f = Fish.randomFishGenerator(origin)
+        print(str(f.vision) + ", " + str(f.speed) + ", " + str(f.riskAwareness))
+
 
     

@@ -105,7 +105,7 @@ class Aquarium:
                 if fish.status and fish.speed >= i:
                     self.moveFish(fish)
         i = 0
-        while i != self.fishes.length:
+        while i != self.fishes:
             fish = self.fishes.get(i)
             if not fish.status:
                 self.fishes.remove(fish)
