@@ -19,6 +19,7 @@ class Fish:
     SOUTHWEST = tuple(map(sum, zip(DOWN, LEFT)))
     POINTS = 15
 
+
     # all fish will have various attributes (initialized by aquarium class)
     # if we are using our training fish, movement pattern will be defined by A*
     # if we are not using training fish, it will be pre-defined as argument
@@ -82,12 +83,12 @@ class Fish:
         return self.translateMove(self.loc, delta)
 
     def randomFishGenerator(self, loc):
-        self.loc = loc
         self.vision = random.randint(1, self.POINTS)
         self.POINTS -= self.vision
         self.speed = random.randint(1, self.POINTS)
         self.POINTS -= self.speed
         self.riskAwareness = self.POINTS
+        return Fish(loc, self.vision, self.speed, self.riskAwareness)
 
     def __repr__(self):
         return "fish"
