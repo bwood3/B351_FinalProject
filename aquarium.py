@@ -70,7 +70,7 @@ class Aquarium:
             if visionRange >= distance:
                 visibleFish.append(otherFish)
         limitedGrid = self.createGrid(self.size, visibleFish)
-        return limitedGrid
+        return limitedGrid, visibleFish
 
     #checks to make sure the destination node a fish trys to move to is valid
     def checkValidMove(self, destNode):
@@ -81,8 +81,8 @@ class Aquarium:
     #and moves the fish to the destination node, before finally checking overlaps at
     #destination
     def moveFish(self, fish):
-        visionGrid = self.getVision(fish)
-        destNode = fish.getMove(visionGrid)
+        visionGrid, visibleFish = self.getVision(fish)
+        destNode = fish.getMove(visionGrid, visibleFish)
         if self.checkValidMove(destNode):
             oldPos = fish.loc
             fish.loc = destNode

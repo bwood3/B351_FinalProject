@@ -2,6 +2,7 @@
 # todo instead of timer we could say a fish with a higher speed gets x more moves to every 1 move of a slower fish?
 import random
 import heapq
+import math
 
 
 class Fish:
@@ -36,11 +37,12 @@ class Fish:
             self.movementQueue = movementPattern
 
     # in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
-    def getMove(self, visionGrid):
+    def getMove(self, visionGrid, visibleFish):
 
         # todo add an interpretation for visionGrid
         # check if current grid interferes with current path (present in movementQueue)
-        return self.randomMove(visionGrid)
+        return self.startASearch(visionGrid, visibleFish)
+        #return self.randomMove(visionGrid)
 
     def translateMove(self, curLoc, delta):
         return tuple(map(sum, zip(curLoc, delta)))
@@ -81,20 +83,37 @@ class Fish:
         move = adjacencies[random.randint(0, len(adjacencies) - 1)]
         return move
 
-    def aSearch(self, visionGrid):
+    def startASearch(self, visionGrid, visibleFish):
+        bestMoves, parentMap = self.aSearch(visionGrid, visibleFish)
+        nextMoves = list()
+        for move in bestMoves:
+            parentMove = parentMap[move.loc]
+            nextMove = move.loc
+            while parentMove != self.loc:
+                nextMove = parentMove
+                parentMove = parentMap[parentMove]
+            nextMoves.append(nextMove)
+        choosenMove = nextMoves[random.randint(0, len(nextMoves) - 1)]
+        return choosenMove
+
+    def aSearch(self, visionGrid, visibleFish):
         parentMap = {}
         minFringe = []
-        searchDepth = self.speed
-        bestMove = Node(self.loc, 0, 100000)
-        heapq.heappush(minFringe, bestMove)
+        searchDepth = self.vision
+        bestMoves = [Node(self.loc, 0, 100000)]
+        heapq.heappush(minFringe, bestMoves[0])
         while(minFringe):
             parent = heapq.heappop(minFringe)
-            if parent.value < bestMove.value:
-                bestMove = parent
+            if parent.value < bestMoves[0].value:
+                bestMoves = [parent]
+            elif parent.value == bestMoves[0].value:
+                bestMoves.append(parent)
             if parent.depth <= searchDepth:
                 for adj in self.findAdjacencies(parent.loc, visionGrid):
-                    pass
-        return bestMove
+                    if not adj in parentMap.keys():
+                        parentMap[adj] = parent.loc
+                        heapq.heappush(minFringe, Node(adj, parent.depth + 1, self.heuristic(adj, visionGrid, visibleFish)))
+        return bestMoves, parentMap
 
     def findAdjacencies(self, loc, visionGrid):
         width = len(visionGrid)
@@ -107,8 +126,22 @@ class Fish:
                 adjacencies.append(adjacent)
         return adjacencies
 
-    def heuristic(self, loc, visionGrid):
-        return 0
+    def calc_euclidean_distance(self, node_a, node_b):
+        distance = 0
+        for a, b in zip(node_a, node_b):
+            distance += pow(a - b, 2)
+        distance = pow(distance, 0.5)
+        return distance  
+
+    def heuristic(self, loc, visionGrid, visibleFish):
+        value = 0
+        for otherFish in visibleFish:
+            distance = math.floor(self.calc_euclidean_distance(loc, otherFish.loc))
+            if distance <= self.riskAwareness and otherFish.score > self.score and distance != 0:
+                value += (1 / distance) * self.riskAwareness
+            elif otherFish.score < self.score and distance != 0:
+                value -= (1 / distance) * self.vision
+        return value
 
     @staticmethod
     def randomFishGenerator(loc):
