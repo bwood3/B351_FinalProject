@@ -20,5 +20,3 @@ if __name__ == '__main__':
     print("Run Demo:\n")
     print("Fish origin: ", (10, 10))
 
-
-
