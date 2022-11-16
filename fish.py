@@ -1,6 +1,7 @@
 # todo because aquarium will be initializing fish should we have "attribute randomizer with limit" method in that class
 # todo instead of timer we could say a fish with a higher speed gets x more moves to every 1 move of a slower fish?
 import random
+import heapq
 
 
 class Fish:
@@ -81,7 +82,11 @@ class Fish:
         return self.translateMove(self.loc, delta)
 
     def aSearch(self, visionGrid):
-        pass
+        parentMap = {}
+        minFringe = []
+        heapq.heappush(minFringe, self.loc)
+        while(minFringe):
+            pass
 
     def findAdjacencies(self, loc, visionGrid):
         width = len(visionGrid)
