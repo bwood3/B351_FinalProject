@@ -24,9 +24,9 @@ class Aquarium:
         for y in range(0, self.size):
             for x in range(0, self.size):
                 if self.grid[x][y] == []:
-                    string += "[" + "] "
+                    string += "[ " + "] "
                 else:
-                    string += "[" + ''.join(str(self.grid[x][y])) + "] "
+                    string += "" + ''.join(str(self.grid[x][y])) + " "
                 if x == self.size - 1:
                     print(string)
                     string = ""
@@ -117,5 +117,5 @@ class Aquarium:
 
     def createFood(self):
         foodLoc = tuple(random.randint(0, self.size - 1), random.randint(0, self.size - 1))
-        self.fishes.append(Fish(foodLoc, 0, 0, 0))
+        self.fishes.append(Fish(foodLoc, 0, 0, 0, "food"))
         

@@ -23,13 +23,14 @@ class Fish:
     # all fish will have various attributes (initialized by aquarium class)
     # if we are using our training fish, movement pattern will be defined by A*
     # if we are not using training fish, it will be pre-defined as argument
-    def __init__(self, loc, vision, speed, riskAwareness, movementPattern=None):
+    def __init__(self, loc, vision, speed, riskAwareness, fishType, movementPattern=None):
         self.loc = loc
         self.vision = vision
         self.speed = speed
         self.riskAwareness = riskAwareness
         self.status = self.ALIVE
         self.score = 0
+        self.fishType = fishType
 
         if (movementPattern == None):
             self.movementQueue = self.path()
@@ -136,7 +137,7 @@ class Fish:
     def heuristic(self, loc, visionGrid, visibleFish):
         value = 0
         for otherFish in visibleFish:
-            distance = math.floor(self.calc_euclidean_distance(loc, otherFish.loc))
+            distance = self.calc_euclidean_distance(loc, otherFish.loc)
             if distance <= self.riskAwareness and otherFish.score > self.score and distance != 0:
                 value += (1 / distance) * self.riskAwareness
             elif otherFish.score < self.score and distance != 0:
@@ -144,7 +145,7 @@ class Fish:
         return value
 
     @staticmethod
-    def randomFishGenerator(loc):
+    def randomFishGenerator(loc, fishType):
         vision = 0
         speed = 0
         riskAwareness = 0
@@ -156,9 +157,15 @@ class Fish:
                 speed += 1
             else:
                 riskAwareness += 1
-        return Fish(loc, vision, speed, riskAwareness)
+        return Fish(loc, vision, speed, riskAwareness, fishType)
 
     def __repr__(self):
+        if self.fishType == "npc":
+            return "N"
+        if self.fishType == "training":
+            return "T"
+        if self.fishType == "food":
+            return "F"
         return "fish"
 
 
