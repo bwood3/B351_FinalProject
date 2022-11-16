@@ -119,6 +119,6 @@ class Aquarium:
 
 
     def createFood(self):
-        foodLoc = tuple(random.randint(0, self.size), random.randint(0, self.size))
+        foodLoc = tuple(random.randint(0, self.size - 1), random.randint(0, self.size - 1))
         self.fishes.append(Fish(foodLoc, 0, 0, 0))
         
