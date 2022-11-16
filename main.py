@@ -16,5 +16,7 @@ if __name__ == '__main__':
         aquarium.updateSim()
         print(aquarium)
 
+    for i in range(1, 10):
+        
 
     

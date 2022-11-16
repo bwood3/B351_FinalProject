@@ -82,6 +82,7 @@ class Fish:
 
         return self.translateMove(self.loc, delta)
 
+    @staticmethod
     def randomFishGenerator(self, loc):
         self.vision = random.randint(1, self.POINTS)
         self.POINTS -= self.vision
