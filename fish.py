@@ -40,11 +40,7 @@ class Fish:
 
         # todo add an interpretation for visionGrid
         # check if current grid interferes with current path (present in movementQueue)
-
-        if (len(self.movementQueue) > 0):
-            move = self.movementQueue.pop(0)
-            return self.myDest(move)
-        return self.loc
+        return self.randomMove(visionGrid)
 
     def translateMove(self, curLoc, delta):
         print("Fish Destination: ", tuple(map(sum, zip(curLoc, delta))))
@@ -81,18 +77,30 @@ class Fish:
 
         return self.translateMove(self.loc, delta)
 
+    def randomMove(self, visionGrid):
+        adjacencies = self.findAdjacencies(self.loc, visionGrid)
+        move = adjacencies[random.randint(0, len(adjacencies) - 1)]
+        return move
+
     def aSearch(self, visionGrid):
         parentMap = {}
         minFringe = []
-        heapq.heappush(minFringe, self.loc)
+        searchDepth = self.speed
+        bestMove = Node(self.loc, 0, 100000)
+        heapq.heappush(minFringe, bestMove)
         while(minFringe):
-            pass
+            parent = heapq.heappop(minFringe)
+            if parent.value < bestMove.value:
+                bestMove = parent
+            if parent.depth <= searchDepth:
+                for adj in self.findAdjacencies(parent.loc, visionGrid):
+                    pass
+        return bestMove
 
     def findAdjacencies(self, loc, visionGrid):
         width = len(visionGrid)
         height = len(visionGrid[0])
-        allDirections = [self.UP, self.DOWN, self.LEFT, self.RIGHT, self.NORTHEAST, self.NORTHWEST, self.SOUTHEAST,
-                         self.SOUTHWEST]
+        allDirections = [self.UP, self.DOWN, self.LEFT, self.RIGHT, self.NORTHEAST, self.NORTHWEST, self.SOUTHEAST, self.SOUTHWEST, (0, 0)]
         adjacencies = list()
         for direction in allDirections:
             adjacent = self.translateMove(loc, direction)
@@ -100,12 +108,15 @@ class Fish:
                 adjacencies.append(adjacent)
         return adjacencies
 
+    def heuristic(self, loc, visionGrid):
+        return 0
+
     @staticmethod
     def randomFishGenerator(loc):
         vision = 0
         speed = 0
         riskAwareness = 0
-        for i in range(15):
+        for i in range(9):
             r = random.randint(0, 2)
             if r == 0:
                 vision += 1
