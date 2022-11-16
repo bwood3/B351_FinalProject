@@ -48,7 +48,8 @@ class Aquarium:
             if fish.score == maxTier:
                 fishAtNode.remove(fish)
         for fish in fishAtNode:
-            predator.eat(fish)
+            sustanence = min(10, fish.score)
+            predator.score += sustanence
             fish.status = 0
             self.grid[node[0]][node[1]].remove(fish)
 
@@ -118,6 +119,6 @@ class Aquarium:
 
 
     def createFood(self):
-        foodLoc = tuple(random.randint(0, self.size), random.randint(0, self.size))
+        foodLoc = tuple(random.randint(0, self.size - 1), random.randint(0, self.size - 1))
         self.fishes.append(Fish(foodLoc, 0, 0, 0))
         

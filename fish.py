@@ -80,6 +80,20 @@ class Fish:
 
         return self.translateMove(self.loc, delta)
 
+    def aSearch(self, visionGrid):
+        pass
+
+    def findAdjacencies(self, loc, visionGrid):
+        width = len(visionGrid)
+        height = len(visionGrid[0])
+        allDirections = [self.UP, self.DOWN, self.LEFT, self.RIGHT, self.NORTHEAST, self.NORTHWEST, self.SOUTHEAST, self.SOUTHWEST]
+        adjacencies = list()
+        for direction in allDirections:
+            adjacent = self.translateMove(loc, direction)
+            if(adjacent[0] >= 0 and adjacent[0] < width and adjacent[1] >= 0 and adjacent[1] < height):
+                adjacencies.append(adjacent)
+        return adjacencies
+
     @staticmethod
     def randomFishGenerator(loc):
         vision = 0
@@ -96,4 +110,46 @@ class Fish:
         return Fish(loc, vision, speed, riskAwareness)
 
     def __repr__(self):
+<<<<<<< HEAD
         return "fish"
+=======
+        return "fish"
+
+
+class Node:
+
+    def __init__(self, loc, depth, heuristicValue):
+        self.loc = loc
+        self.depth = depth
+        self.value = heuristicValue
+
+    def _is_valid_operand(self, other):
+        return (hasattr(other, "depth") and
+                hasattr(other, "value"))
+
+    def __eq__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return (self.depth + self.value) == (other.depth + other.value)
+
+    def __lt__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return (self.depth + self.value) < (other.depth + other.value)
+
+    def __gt__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return (self.depth + self.value) > (other.depth + other.value)
+
+    def __le__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return (self.depth + self.value) <= (other.depth + other.value)
+
+    def __ge__(self, other):
+        if not self._is_valid_operand(other):
+            return NotImplemented
+        return (self.depth + self.value) >= (other.depth + other.value)
+
+>>>>>>> ec4080daf5b5de3cf32b928fa692bc4d43460a40
