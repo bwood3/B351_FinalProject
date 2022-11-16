@@ -7,6 +7,7 @@ class Aquarium:
         self.size = size #Size N of the NxN grid
         self.fishes = fishes #contains all fish, living and dead
         self.grid = self.createGrid(size, fishes) #contains living fish at their respective locations
+        self.lifetime = 0 #how long the aquarium has been simulating
         
     #Used to create a new N*N grid of the given size,
     #then inserts the list of fish into their respective location
@@ -96,7 +97,10 @@ class Aquarium:
     #This is the function called by main for every tick of the simulation.
     #It updates all of the fish not dead.
     def updateSim(self):
+        self.lifetime += 1
         maxSpeed = 0
+        if self.lifetime % 10 == 0:
+            self.createFood
         for fish in self.fishes:
             if fish.status:
                 maxSpeed = max(maxSpeed, fish.speed)
@@ -115,5 +119,5 @@ class Aquarium:
 
     def createFood(self):
         foodLoc = tuple(random.randint(0, self.size), random.randint(0, self.size))
-        food = Fish(foodLoc, 0, 0, 0)
+        self.fishes.append(Fish(foodLoc, 0, 0, 0))
         
