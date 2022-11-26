@@ -1,12 +1,16 @@
 from aquarium import Aquarium
 from fish import Fish
-from aquariumViewer import View
+from PyAquarium.PyView import View
 import random
-if __name__ == '__main__':
 
-    # pygame display
-    # aquarium = View(700)
-    print("Running Main")
+def runPySim():
+    print("Running Main Pygame")
+    gridSize = 20
+    displaySize = 700
+    view = View(gridSize, displaySize)
+
+def runConsoleSim():
+    print("Running Main Console")
     origin = (10, 10)  # starting point for the training fish
     possibleX = [1, 3, 5, 7, 13, 15, 17, 19]
     possibleY = [1, 3, 5, 7, 13, 15, 17, 19]
@@ -33,4 +37,9 @@ if __name__ == '__main__':
     print(scores)
 
     print("Run Demo:\n")
+
+if __name__ == '__main__':
+    runConsoleSim()
+    # runPySim()
+
 
