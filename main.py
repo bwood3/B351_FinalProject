@@ -1,12 +1,15 @@
 from aquarium import Aquarium
 from fish import Fish
+from aquariumViewer import View
 import random
 if __name__ == '__main__':
+
+    # pygame display
+    # aquarium = View(700)
     print("Running Main")
     origin = (10, 10)  # starting point for the training fish
     possibleX = [1, 3, 5, 7, 13, 15, 17, 19]
     possibleY = [1, 3, 5, 7, 13, 15, 17, 19]
-    
 
     training_fishes = [Fish.randomFishGenerator(origin, "training") for i in range(10)]
 
