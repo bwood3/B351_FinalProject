@@ -1,13 +1,13 @@
 from aquarium import Aquarium
 from fish import Fish
-from PyAquarium.PyView import View
+# from PyAquarium.PyView import View
 import random
 
-def runPySim():
-    print("Running Main Pygame")
-    gridSize = 20 # this can be viewed as equivalent to pixel count
-    displaySize = 750
-    view = View(gridSize, displaySize)
+# def runPySim():
+#     print("Running Main Pygame")
+#     gridSize = 20 # this can be viewed as equivalent to pixel count
+#     displaySize = 750
+#     view = View(gridSize, displaySize)
 
 def runConsoleSim():
     print("Running Main Console")
