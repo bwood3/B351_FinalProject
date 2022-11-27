@@ -12,25 +12,26 @@ class View():
         self.HEIGHT = viewSize
         self.WIDTH = self.HEIGHT
 
+        self.grid_size = grid_size
         #display view
-        self.setUpGame(grid_size)
+        self.setUpGame()
         self.displayMain()
 
-    def setUpGame(self, grid_size):
-        self.setGridScale(grid_size)
+    def setUpGame(self):
+        self.setGridScale()
         self.BACKGROUND_COLOR = (52, 192, 235)
         self.setFonts()
         self.setTrainingVars()
         self.setDisplay()
         #sprites must first have a display initialized
         self.setUpSprites()
-        self.setVisionView(grid_size)
+        self.setVisionView()
 
     # possible move locations on board will be a factor of cells in array/grid
     # const_dist is critical variable allowing us to print sprites in correct location
-    def setGridScale(self, grid_size):
+    def setGridScale(self):
         # determine where to draw objects on grid
-        start_pos = self.HEIGHT / grid_size  # start position
+        start_pos = self.HEIGHT / self.grid_size  # start position
         self.const_dist = start_pos  # with add equal **distance from each line**
 
     def setDisplay(self):
@@ -50,9 +51,9 @@ class View():
         self.npc = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[2])
         self.food = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[1])
 
-    def setVisionView(self, grid_size):
-        self.CIRCLE_RADIUS = self.HEIGHT / grid_size #must be initialized from fish object in game logic
-        self.CIRCLE_WIDTH = int(self.HEIGHT / grid_size / 8.75)
+    def setVisionView(self):
+        self.CIRCLE_RADIUS = self.HEIGHT / self.grid_size #must be initialized from fish object in game logic
+        self.CIRCLE_WIDTH = int(self.HEIGHT / self.grid_size / 8.75)
         self.circleColor = (9, 74, 115)
 
     def setFonts(self):
@@ -88,6 +89,15 @@ class View():
             translatedLoc = (col * self.const_dist - self.CORRECTION, row * self.const_dist - self.CORRECTION)
             self.grid.blit(self.npc.sprite, translatedLoc)
 
+    def displayStats(self, fish):
+        # show training fish score
+        counting_text = self.font.render("Score: " + str(fish.score), 1, (0, 0, 0))
+        self.grid.blit(counting_text, (1, self.grid_size / 10))
+        vision_text = self.font.render("Vision: " + str(fish.vision), 1, (0, 0, 0))
+        self.grid.blit(vision_text, (1, self.grid_size * 1.2))
+        risk_text = self.font.render("Risk: " + str(fish.riskAwareness), 1, (0, 0, 0))
+        self.grid.blit(risk_text, (1, self.grid_size * 2.4))
+
     #todo this logic will need to be updated with new code
     def displayMain(self):
         scores = []
@@ -104,7 +114,7 @@ class View():
                 fishes.append(f)
             i.score = 100
             fishes.append(i)
-            aquarium = Aquarium(20, fishes)
+            aquarium = Aquarium(self.grid_size, fishes)
             while aquarium.lifetime < 100 and fishes[-1].status == 1:
                 #slow down tics to viewable rate
                 pygame.time.wait(300)
@@ -121,9 +131,7 @@ class View():
                 for fish in aquarium.fishes:
                     if(fish.fishType == "training"):
                         self.displayObject(fish.loc, fish.fishType, fish.vision)
-                        # show training fish score
-                        counting_text = self.font.render("Score: " + str(fish.score), 1, (0, 0, 0))
-                        self.grid.blit(counting_text,(1,2))
+                        self.displayStats(fish)
                     else:
                         self.displayObject(fish.loc, fish.fishType)
 

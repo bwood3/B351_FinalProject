@@ -5,8 +5,8 @@ import random
 
 def runPySim():
     print("Running Main Pygame")
-    gridSize = 20
-    displaySize = 700
+    gridSize = 20 # this can be viewed as equivalent to pixel count
+    displaySize = 750
     view = View(gridSize, displaySize)
 
 def runConsoleSim():
