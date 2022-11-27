@@ -4,7 +4,7 @@ from aquarium import Aquarium
 from fish import Fish
 from PyAquarium.PyGameObject import PyFish
 from PyAquarium.PyGameObject import PyFood
-#test
+
 class View():
 
     def __init__(self, grid_size, viewSize):
@@ -90,13 +90,16 @@ class View():
             self.grid.blit(self.npc.sprite, translatedLoc)
 
     def displayStats(self, fish):
+        padding = 25
         # show training fish score
         counting_text = self.font.render("Score: " + str(fish.score), 1, (0, 0, 0))
         self.grid.blit(counting_text, (1, self.grid_size / 10))
         vision_text = self.font.render("Vision: " + str(fish.vision), 1, (0, 0, 0))
-        self.grid.blit(vision_text, (1, self.grid_size * 1.2))
+        self.grid.blit(vision_text, (1, self.grid_size/10 + padding))
         risk_text = self.font.render("Risk: " + str(fish.riskAwareness), 1, (0, 0, 0))
-        self.grid.blit(risk_text, (1, self.grid_size * 2.4))
+        self.grid.blit(risk_text, (1, self.grid_size/10 + padding * 2))
+        speed_text = self.font.render("Speed: " + str(fish.speed), 1, (0, 0, 0))
+        self.grid.blit(speed_text, (1, self.grid_size/10 + padding * 3))
 
     #todo this logic will need to be updated with new code
     def displayMain(self):
