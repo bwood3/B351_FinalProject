@@ -3,12 +3,13 @@ from fish import Fish
 
 class Evolution:
 
-    def __init__(self, mutateChance, fishOrigin):
+    def __init__(self, mutateChance, fishOrigin, fishTotalPoints):
         self.mutateChance = mutateChance
         self.fishOrigin = fishOrigin
+        self.fishTotalPoints = fishTotalPoints
 
     def calcWeights(self, fishList):
-        totalScore = 10
+        totalScore = 0
         for fish in fishList:
             totalScore += fish.score + 1
             weights = [(fish.score + 1) / totalScore for fish in fishList]
@@ -35,21 +36,27 @@ class Evolution:
             speed = parent2.speed
         pick_risk = random.randint(1, 2)
         if pick_risk == 1:
-            risk = parent1.risk
+            risk = parent1.riskAwareness
         else:
-            risk = parent2.risk
-        return Fish(self.fishOrigin, vision, speed, risk, fishType = "training", movementPattern=None)
+            risk = parent2.riskAwareness
+        pick_tier = random.randint(1, 2)
+        if pick_tier == 1:
+            initTier = parent1.initTier
+        else:
+            initTier = parent2.initTier
+        return Fish(self.fishOrigin, vision, speed, risk, initTier, fishType = "training", movementPattern=None)
 
     def mutate(self, fish):
         chance = random.random()
         if chance <= self.mutateChance:
-            return Fish.randomFishGenerator(self.fishOrigin, fish.fishType)
+            return Fish.randomFishGenerator(self.fishOrigin, fish.fishType, self.fishTotalPoints)
         else:
             return fish
 
     def createGeneration(self, prevGen):
         weights = self.calcWeights(prevGen)
-        parents = [tuple(self.pickParent(prevGen, weights), self.pickParent(prevGen, weights)) for fish in prevGen]
+        # print("Weights: " + str(weights))
+        parents = [(self.pickParent(prevGen, weights), self.pickParent(prevGen, weights)) for fish in prevGen]
         generation = list()
         for p1, p2 in parents:
             generation.append(self.mutate(self.crossBreed(p1, p2)))

@@ -39,13 +39,13 @@ class Aquarium:
     #node is a tuple of integers in order (x, y)
     def checkOverlap(self, node):
         fishAtNode = list(self.grid[node[0]][node[1]])
-        maxTier = 0
+        maxTier = -1
         for fish in fishAtNode:
-            if fish.score > maxTier:
+            if fish.getTier() > maxTier:
                 predator = fish
-                maxTier = fish.score
+                maxTier = fish.getTier()
         for fish in list(fishAtNode):
-            if fish.score == maxTier:
+            if fish.getTier() == maxTier and not fish.fishType == "food":
                 fishAtNode.remove(fish)
         for fish in fishAtNode:
             sustanence = max(10, fish.score)
@@ -97,8 +97,8 @@ class Aquarium:
     def updateSim(self):
         self.lifetime += 1
         maxSpeed = 0
-        if self.lifetime % 10 == 0:
-            self.createFood
+        if (self.lifetime % 10) == 0:
+            self.createFood()
         for fish in self.fishes:
             if fish.status:
                 maxSpeed = max(maxSpeed, fish.speed)
@@ -116,6 +116,8 @@ class Aquarium:
 
 
     def createFood(self):
-        foodLoc = tuple(random.randint(0, self.size - 1), random.randint(0, self.size - 1))
-        self.fishes.append(Fish(foodLoc, 0, 0, 0, "food"))
+        foodLoc = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))
+        food = Fish(foodLoc, 0, 0, 0, 0, "food")
+        self.fishes.append(food)
+        self.grid[foodLoc[0]][foodLoc[1]].append(food)
         

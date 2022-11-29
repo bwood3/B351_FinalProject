@@ -23,11 +23,12 @@ class Fish:
     # all fish will have various attributes (initialized by aquarium class)
     # if we are using our training fish, movement pattern will be defined by A*
     # if we are not using training fish, it will be pre-defined as argument
-    def __init__(self, loc, vision, speed, riskAwareness, fishType, movementPattern=None):
+    def __init__(self, loc, vision, speed, riskAwareness, initTier, fishType, movementPattern=None):
         self.loc = loc
         self.vision = vision
         self.speed = speed
         self.riskAwareness = riskAwareness
+        self.initTier = initTier
         self.status = self.ALIVE
         self.score = 0
         self.fishType = fishType
@@ -36,6 +37,9 @@ class Fish:
             self.movementQueue = self.path()
         else:
             self.movementQueue = movementPattern
+
+    def getTier(self):
+        return self.initTier + math.floor(self.score / 100)
 
     # in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
     def getMove(self, visionGrid, visibleFish):
@@ -138,26 +142,18 @@ class Fish:
         value = 0
         for otherFish in visibleFish:
             distance = self.calc_euclidean_distance(loc, otherFish.loc)
-            if distance <= self.riskAwareness and otherFish.score > self.score and distance != 0:
+            if distance <= self.riskAwareness and otherFish.getTier() > self.getTier() and distance != 0:
                 value += (1 / distance) * self.riskAwareness
-            elif otherFish.score < self.score and distance != 0:
+            elif (otherFish.getTier() < self.getTier() or otherFish.fishType == "food") and distance != 0:
                 value -= (1 / distance) * self.vision
         return value
 
     @staticmethod
-    def randomFishGenerator(loc, fishType):
-        vision = 0
-        speed = 0
-        riskAwareness = 0
-        for i in range(9):
-            r = random.randint(0, 2)
-            if r == 0:
-                vision += 1
-            elif r == 1:
-                speed += 1
-            else:
-                riskAwareness += 1
-        return Fish(loc, vision, speed, riskAwareness, fishType)
+    def randomFishGenerator(loc, fishType, totalPoints):
+        attributes = [0, 0, 0, 0] #vision, speed, riskAwareness, initTier
+        for i in range(totalPoints - 1):
+            attributes[random.randint(0, 3)] += 1
+        return Fish(loc, attributes[0], attributes[1], attributes[2], attributes[3], fishType)
 
     def __repr__(self):
         if self.fishType == "npc":
@@ -167,6 +163,9 @@ class Fish:
         if self.fishType == "food":
             return "F"
         return "fish"
+
+    def strAttributes(self):
+        return "Vision: "+ str(self.vision) + " Speed: " + str(self.speed) + " Risk: " + str(self.riskAwareness) + " Tier: " + str(self.initTier)
 
 
 class Node:
