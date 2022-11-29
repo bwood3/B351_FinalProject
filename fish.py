@@ -39,7 +39,7 @@ class Fish:
             self.movementQueue = movementPattern
 
     def getTier(self):
-        return math.floor(self.score / 100) + self.initTier
+        return math.floor(self.score / 10) + self.initTier
 
     # in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
     def getMove(self, visionGrid, visibleFish):

@@ -25,12 +25,17 @@ def runConsoleSim():
         bestScore = -1
         for i in training_fishes:
             fishes = []
-            for j in range(0, 10):
+            for j in range(0, 9):
                 x = random.randint(0, 7)
                 y = random.randint(0, 7)
                 loc = (possibleX[x], possibleY[y])
                 f = Fish.randomFishGenerator(loc, "npc", maxAttributePoints)
                 fishes.append(f)
+            x = random.randint(0, 7)
+            y = random.randint(0, 7)
+            loc = (possibleX[x], possibleY[y])
+            f = Fish(loc, 2, 2, 0, 20, "npc") #adds a predator npc
+            fishes.append(f)
             #i.score = 100
             fishes.append(i)
             aquarium = Aquarium(20, fishes)
