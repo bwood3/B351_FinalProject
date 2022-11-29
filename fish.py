@@ -39,7 +39,7 @@ class Fish:
             self.movementQueue = movementPattern
 
     def getTier(self):
-        return self.initTier + math.floor(self.score / 100)
+        return math.floor(self.score / 100) + self.initTier
 
     # in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
     def getMove(self, visionGrid, visibleFish):
@@ -109,9 +109,9 @@ class Fish:
         heapq.heappush(minFringe, bestMoves[0])
         while(minFringe):
             parent = heapq.heappop(minFringe)
-            if parent.value < bestMoves[0].value:
+            if parent < bestMoves[0]:
                 bestMoves = [parent]
-            elif parent.value == bestMoves[0].value:
+            elif parent == bestMoves[0]:
                 bestMoves.append(parent)
             if parent.depth <= searchDepth:
                 for adj in self.findAdjacencies(parent.loc, visionGrid):
