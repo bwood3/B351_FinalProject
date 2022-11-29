@@ -2,8 +2,7 @@ import random
 import pygame, sys
 from aquarium import Aquarium
 from fish import Fish
-from PyAquarium.PyGameObject import PyFish
-from PyAquarium.PyGameObject import PyFood
+from PyAquarium.PyGameObject import PyFish, PyFood
 
 class View():
 
@@ -52,7 +51,7 @@ class View():
         self.food = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[1])
 
     def setVisionView(self):
-        self.CIRCLE_RADIUS = self.HEIGHT / self.grid_size #must be initialized from fish object in game logic
+        self.CIRCLE_RADIUS = self.HEIGHT / self.grid_size
         self.CIRCLE_WIDTH = int(self.HEIGHT / self.grid_size / 8.75)
         self.circleColor = (9, 74, 115)
 
@@ -79,13 +78,13 @@ class View():
                                 row * self.const_dist + (self.const_dist/1.3)), self.CIRCLE_RADIUS * vision, self.CIRCLE_WIDTH)
 
         #food
-        if type == "food":
+        elif type == "food":
             # location translate based on grid/array size
             translatedLoc = (col * self.const_dist - self.CORRECTION, row * self.const_dist - self.CORRECTION)
             self.grid.blit(self.food.sprite, translatedLoc)
 
         #enmey
-        if type == "npc":
+        elif type == "npc":
             translatedLoc = (col * self.const_dist - self.CORRECTION, row * self.const_dist - self.CORRECTION)
             self.grid.blit(self.npc.sprite, translatedLoc)
 
