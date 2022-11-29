@@ -1,5 +1,2 @@
-__pycache__/aquarium.cpython-39.pyc
-__pycache__/evolution.cpython-39.pyc
-__pycache__/fish.cpython-39.pyc
-PyAquarium/__pycache__/
-__pycache__/
+PyAquarium/__pycache__/*
+__pycache__/*
