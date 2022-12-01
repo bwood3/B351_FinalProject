@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\PyAquarium"
   ],
-  "SelectedNode": "\\fish.py",
+  "SelectedNode": "\\main.py",
   "PreviewInSolutionExplorer": false
 }

@@ -142,10 +142,16 @@ class Fish:
         value = 0
         for otherFish in visibleFish:
             distance = self.calc_euclidean_distance(loc, otherFish.loc)
-            if distance <= self.riskAwareness and otherFish.getTier() > self.getTier() and distance != 0:
-                value += (1 / distance) * self.riskAwareness
-            elif (otherFish.getTier() < self.getTier() or otherFish.fishType == "food") and distance != 0:
-                value -= (1 / distance) * self.vision
+            if distance <= self.riskAwareness and otherFish.getTier() > self.getTier():
+                if distance == 0:
+                    value += (self.riskAwareness + 1)
+                else:
+                    value += (1 / distance) * self.riskAwareness
+            elif (otherFish.getTier() < self.getTier() or otherFish.fishType == "food"):
+                if distance == 0:
+                    value -= (self.vision + 1)
+                else:
+                    value -= (1 / distance) * self.vision
         return value
 
     @staticmethod
