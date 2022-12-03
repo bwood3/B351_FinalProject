@@ -50,7 +50,7 @@ def runConsoleSim():
         print("Best fish had: " + bestFish.strAttributes())
         print("With score: " + str(bestScore))
         #print(scores)
-        #print("Average: " + str(sum(scores) / 10))
+        print("Average: " + str(sum(scores) / 10))
         training_fishes = evolution.createGeneration(training_fishes)
     print("Run Demo:\n")
 

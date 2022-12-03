@@ -33,7 +33,7 @@ class Fish:
         self.fishType = fishType
 
     def getTier(self):
-        return math.floor(self.score / 10) + self.initTier
+        return math.floor(self.score / 50) + self.initTier
 
     def getMove(self, visionGrid, visibleFish):
         return self.startASearch(visionGrid, visibleFish)
@@ -101,10 +101,13 @@ class Fish:
         distance = pow(distance, 0.5)
         return distance  
 
+    def calc_noneuclidean_distance(self, node_a, node_b):
+        return max(abs(node_a[0] - node_b[0]), abs(node_a[1] - node_b[1]))
+
     def heuristic(self, loc, visionGrid, visibleFish):
         value = 0
         for otherFish in visibleFish:
-            distance = self.calc_euclidean_distance(loc, otherFish.loc)
+            distance = self.calc_noneuclidean_distance(loc, otherFish.loc)
             if distance <= self.riskAwareness and otherFish.getTier() > self.getTier():
                 if distance == 0:
                     value += (self.riskAwareness + 1)

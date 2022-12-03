@@ -46,6 +46,26 @@ class Evolution:
             initTier = parent2.initTier
         return Fish(self.fishOrigin, vision, speed, risk, initTier, fishType = "training")
 
+    def mutateAttrIncr(self, fish):
+        chance = random.random()
+        if chance <= self.mutateChance:
+            attributes = [fish.vision, fish.speed, fish.riskAwareness, fish.initTier]
+            attr = random.randint(0, 3)
+            change = random.randint(-1, 1)
+            attributes[attr] += change
+            return Fish(self.fishOrigin, attributes[0], attributes[1], attributes[2], attributes[3], fish.fishType)
+        else:
+            return fish
+
+    def mutateAttribute(self, fish):
+        chance = random.random()
+        if chance <= self.mutateChance:
+            attributes = [fish.vision, fish.speed, fish.riskAwareness, fish.initTier]
+            attributes[random.randint(0, 3)] = random.randint(0, self.fishTotalPoints)
+            return Fish(self.fishOrigin, attributes[0], attributes[1], attributes[2], attributes[3], fish.fishType)
+        else:
+            return fish
+
     def mutate(self, fish):
         chance = random.random()
         if chance <= self.mutateChance:

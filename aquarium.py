@@ -59,14 +59,18 @@ class Aquarium:
         for a, b in zip(node_a, node_b):
             distance += pow(a - b, 2)
         distance = pow(distance, 0.5)
-        return distance   
+        return distance
+
+    #returns the non-euclidean disntace between two nodes where digaonal distances are equal to orthongaonal distances
+    def calc_noneuclidean_distance(self, node_a, node_b):
+        return max(abs(node_a[0] - node_b[0]), abs(node_a[1] - node_b[1]))
             
     #return a copy of the grid with only what the fish can see
     def getVision(self, fish):
         visionRange = fish.vision #this is the integer value of how far the fish can see
         visibleFish = []
         for otherFish in self.fishes:
-            distance = self.calc_euclidean_distance(fish.loc, otherFish.loc)
+            distance = self.calc_noneuclidean_distance(fish.loc, otherFish.loc)
             if visionRange >= distance:
                 visibleFish.append(otherFish)
         limitedGrid = self.createGrid(self.size, visibleFish)
