@@ -3,6 +3,7 @@ from fish import Fish
 from evolution import Evolution
 from PyAquarium.PyView import View
 import random
+from csv import writer
 
 def runPySim():
     print("Running Main Pygame")
@@ -12,6 +13,13 @@ def runPySim():
 
 def runConsoleSim():
     print("Running Main Console")
+
+    # FOR COLLECTING DATA IN CSV FILE ONLY -> can comment out when not using
+    print("COLLECTING CSV DAT:\n\t*if you want to collect data into CSV press enter\n\t*else comment out code in ConsoleSim")
+    input()
+    initCSV()
+    collectingData = True
+
     origin = (10, 10)  # starting point for the training fish
     mutationChance = 0.02
     maxAttributePoints = 15
@@ -47,14 +55,36 @@ def runConsoleSim():
             if(i.score > bestScore):
                 bestFish = i
                 bestScore = i.score
+
         print("Best fish had: " + bestFish.strAttributes())
         print("With score: " + str(bestScore))
         #print(scores)
         print("Average: " + str(sum(scores) / 10))
         training_fishes = evolution.createGeneration(training_fishes)
-    print("Run Demo:\n")
+
+        if(collectingData):
+            captureData(bestFish.getAttributeDict(), str(bestScore), str(sum(scores) / 10))
+    print("Sim over")
+
+def initCSV():
+    header = ["Score", "Vision", "Speed", "Risk", "Tier", "Average"]
+    with open('MUTATION_DATA.csv', 'w+') as f_object:
+        writer_object = writer(f_object)
+        writer_object.writerow(header)
+        f_object.close()
+
+def captureData(bestFish, bestScore, average):
+    #new row
+    data = [bestScore,bestFish.get("vision"), bestFish.get("speed"), bestFish.get("risk"), bestFish.get("tier"), average ]
+    with open('MUTATION_DATA.csv', 'a') as f_object:
+        writer_object  = writer(f_object)
+        writer_object.writerow(data)
+        f_object.close()
+
 
 if __name__ == '__main__':
+
+
     runConsoleSim()
     # runPySim()
 

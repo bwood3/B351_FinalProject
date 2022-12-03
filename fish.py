@@ -139,6 +139,9 @@ class Fish:
     def strAttributes(self):
         return "Vision: "+ str(self.vision) + " Speed: " + str(self.speed) + " Risk: " + str(self.riskAwareness) + " Tier: " + str(self.initTier)
 
+    def getAttributeDict(self):
+        return {"vision": self.vision, "speed": self.speed, "risk": self.riskAwareness, "tier": self.initTier}
+
 # Node class is used for A* implementation -> specifically node represents neighbor coordinates and has -
 # - custom comparison methods to evaluate that neighbor coordinates goodness
 class Node:
