@@ -1,9 +1,6 @@
-# todo because aquarium will be initializing fish should we have "attribute randomizer with limit" method in that class
-# todo instead of timer we could say a fish with a higher speed gets x more moves to every 1 move of a slower fish?
 import random
 import heapq
 import math
-
 
 class Fish:
     # constant variables that will not change
@@ -20,10 +17,12 @@ class Fish:
     SOUTHEAST = tuple(map(sum, zip(DOWN, RIGHT)))
     SOUTHWEST = tuple(map(sum, zip(DOWN, LEFT)))
 
-    # all fish will have various attributes (initialized by aquarium class)
-    # if we are using our training fish, movement pattern will be defined by A*
-    # if we are not using training fish, it will be pre-defined as argument
-    def __init__(self, loc, vision, speed, riskAwareness, initTier, fishType, movementPattern=None):
+    # All fish will have various attributes which affect their performance and -
+    # - place on the food chain (initTier).
+    # All fish will be initialized using "randomFishGenerator" but training fish -
+    # - will be cross breed via evolution class.
+    # current fishType's include (training fish, npc, and food)
+    def __init__(self, loc, vision, speed, riskAwareness, initTier, fishType):
         self.loc = loc
         self.vision = vision
         self.speed = speed
@@ -33,61 +32,22 @@ class Fish:
         self.score = 0
         self.fishType = fishType
 
-        if (movementPattern == None):
-            self.movementQueue = self.path()
-        else:
-            self.movementQueue = movementPattern
-
     def getTier(self):
         return math.floor(self.score / 10) + self.initTier
 
-    # in our aquarium we will have a loop that calls this method for every fish present (held in stack) to update their location
     def getMove(self, visionGrid, visibleFish):
-
-        # todo add an interpretation for visionGrid
-        # check if current grid interferes with current path (present in movementQueue)
         return self.startASearch(visionGrid, visibleFish)
         #return self.randomMove(visionGrid)
 
     def translateMove(self, curLoc, delta):
         return tuple(map(sum, zip(curLoc, delta)))
 
-    # A list movements for a path training fish will take (A* for training fish, pre-defined for non-training fish)
-    def path(self):
-        return [self.UP, self.RIGHT, self.DOWN, self.NORTHEAST, self.NORTHEAST, self.SOUTHEAST, self.RIGHT,
-                self.RIGHT]  # demo code
-
-    # move direction is a tuple
-    def myDest(self, moveDirection):
-
-        if moveDirection == self.UP:
-            delta = self.UP
-        elif moveDirection == self.DOWN:
-            delta = self.DOWN
-        elif moveDirection == self.RIGHT:
-            delta = self.RIGHT
-        elif moveDirection == self.LEFT:
-            delta = self.LEFT
-        elif moveDirection == self.NORTHEAST:
-            delta = self.NORTHEAST
-        elif moveDirection == self.NORTHWEST:
-            delta = self.NORTHWEST
-        elif moveDirection == self.SOUTHEAST:
-            delta = self.SOUTHEAST
-        elif moveDirection == self.SOUTHWEST:
-            delta = self.SOUTHWEST
-        else:
-            delta = "fail"
-            print("Fish Class Error -> {0} is not a valid move direction".format(moveDirection))
-            quit()
-
-        return self.translateMove(self.loc, delta)
-
     def randomMove(self, visionGrid):
         adjacencies = self.findAdjacencies(self.loc, visionGrid)
         move = adjacencies[random.randint(0, len(adjacencies) - 1)]
         return move
 
+    # returns a single move along a star search path
     def startASearch(self, visionGrid, visibleFish):
         bestMoves, parentMap = self.aSearch(visionGrid, visibleFish)
         nextMoves = list()
@@ -103,30 +63,38 @@ class Fish:
 
     def aSearch(self, visionGrid, visibleFish):
         parentMap = {}
+        # best moves (sorted via heapq)
         minFringe = []
+        # max depth of any branch from root -
+        # -(while this is set to self.vision this doesn't refer distance from current loc)
         searchDepth = self.vision
         bestMoves = [Node(self.loc, 0, 100000)]
         heapq.heappush(minFringe, bestMoves[0])
-        while(minFringe):
+        while (minFringe):
             parent = heapq.heappop(minFringe)
             if parent < bestMoves[0]:
                 bestMoves = [parent]
             elif parent == bestMoves[0]:
                 bestMoves.append(parent)
+
+            # if we have not exceeding max depth from root
             if parent.depth <= searchDepth:
                 for adj in self.findAdjacencies(parent.loc, visionGrid):
                     if not adj in parentMap.keys():
                         parentMap[adj] = parent.loc
-                        heapq.heappush(minFringe, Node(adj, parent.depth + 1, self.heuristic(adj, visionGrid, visibleFish)))
+                        heapq.heappush(minFringe,
+                                       Node(adj, parent.depth + 1, self.heuristic(adj, visionGrid, visibleFish)))
         return bestMoves, parentMap
 
     def findAdjacencies(self, loc, visionGrid):
+        # variables to prevent possible moves from going out of bounds
         width = len(visionGrid)
         height = len(visionGrid[0])
         allDirections = [self.UP, self.DOWN, self.LEFT, self.RIGHT, self.NORTHEAST, self.NORTHWEST, self.SOUTHEAST, self.SOUTHWEST, (0, 0)]
         adjacencies = list()
         for direction in allDirections:
             adjacent = self.translateMove(loc, direction)
+            # prevent possible moves from going out of bounds
             if (adjacent[0] >= 0 and adjacent[0] < width and adjacent[1] >= 0 and adjacent[1] < height):
                 adjacencies.append(adjacent)
         return adjacencies
@@ -173,7 +141,8 @@ class Fish:
     def strAttributes(self):
         return "Vision: "+ str(self.vision) + " Speed: " + str(self.speed) + " Risk: " + str(self.riskAwareness) + " Tier: " + str(self.initTier)
 
-
+# Node class is used for A* implementation -> specifically node represents neighbor coordinates and has -
+# - custom comparison methods to evaluate that neighbor coordinates goodness
 class Node:
 
     def __init__(self, loc, depth, heuristicValue):

@@ -44,7 +44,7 @@ class Evolution:
             initTier = parent1.initTier
         else:
             initTier = parent2.initTier
-        return Fish(self.fishOrigin, vision, speed, risk, initTier, fishType = "training", movementPattern=None)
+        return Fish(self.fishOrigin, vision, speed, risk, initTier, fishType = "training")
 
     def mutate(self, fish):
         chance = random.random()
