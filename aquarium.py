@@ -83,37 +83,31 @@ class Aquarium:
     def moveFish(self, fish):
         visionGrid, visibleFish = self.getVision(fish)
         destNode = fish.getMove(visionGrid, visibleFish)
-        if self.checkValidMove(destNode):
-            oldPos = fish.loc
-            fish.loc = destNode
-            x, y = oldPos
-            self.grid[x][y].remove(fish)
-            x, y = destNode
-            self.grid[x][y].append(fish)
-            self.checkOverlap(destNode)
+
+        oldPos = fish.loc
+        fish.loc = destNode
+        x, y = oldPos
+        self.grid[x][y].remove(fish)
+        x, y = destNode
+        self.grid[x][y].append(fish)
+        self.checkOverlap(destNode)
 
     #This is the function called by main for every tick of the simulation.
     #It updates all of the fish not dead.
     def updateSim(self):
         self.lifetime += 1
-        maxSpeed = 0
         if (self.lifetime % 10) == 0:
             self.createFood()
+
+        # speed will be how many move's fish x can make to each fish y
+        # for example if fish x has a speed of 3 and fish y a speed of 1, it can make three moves in a row while
+        # fish y can make one. Therefore move ratio between fish x and y = 3:1
         for fish in self.fishes:
             if fish.status:
-                maxSpeed = max(maxSpeed, fish.speed)
-        for i in range(maxSpeed, 0, -1):
-            for fish in self.fishes:
-                if fish.status and fish.speed >= i:
+                for i in range(fish.speed):
                     self.moveFish(fish)
-        i = 0
-        while i != len(self.fishes):
-            fish = self.fishes[i]
-            if not fish.status:
+            else: # if fish is not alive after moves it, should be remove from board
                 self.fishes.remove(fish)
-            else:
-                i += 1
-
 
     def createFood(self):
         foodLoc = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))

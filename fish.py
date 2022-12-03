@@ -26,6 +26,8 @@ class Fish:
         self.loc = loc
         self.vision = vision
         self.speed = speed
+        # how close a fish is willing to get to a fish of a higher tier to secure a food source -
+        # - note a fish of a higher tier is able to eat fish ending it's lifecycle
         self.riskAwareness = riskAwareness
         self.initTier = initTier
         self.status = self.ALIVE
@@ -65,8 +67,7 @@ class Fish:
         parentMap = {}
         # best moves (sorted via heapq)
         minFringe = []
-        # max depth of any branch from root -
-        # -(while this is set to self.vision this doesn't refer distance from current loc)
+        # max depth of any branch from root
         searchDepth = self.vision
         bestMoves = [Node(self.loc, 0, 100000)]
         heapq.heappush(minFringe, bestMoves[0])
@@ -77,7 +78,7 @@ class Fish:
             elif parent == bestMoves[0]:
                 bestMoves.append(parent)
 
-            # if we have not exceeding max depth from root
+            # if we have not exceeded max depth from root
             if parent.depth <= searchDepth:
                 for adj in self.findAdjacencies(parent.loc, visionGrid):
                     if not adj in parentMap.keys():
@@ -110,6 +111,7 @@ class Fish:
         value = 0
         for otherFish in visibleFish:
             distance = self.calc_euclidean_distance(loc, otherFish.loc)
+            # if our fish notices a fish of a higher tier and is within risk tolerance,
             if distance <= self.riskAwareness and otherFish.getTier() > self.getTier():
                 if distance == 0:
                     value += (self.riskAwareness + 1)
