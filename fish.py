@@ -32,12 +32,15 @@ class Fish:
         self.score = 0
         self.fishType = fishType
 
+    # Determines the tier of a fish based on its current score and its initial tier attribute
+    # Changes to the constant denominator will alter the impact acheiving score has on a fish's performance. - 
+    # - If this number is too small it allows training fish to get big enough to eat the predator fish.
     def getTier(self):
         return math.floor(self.score / 50) + self.initTier
 
     def getMove(self, visionGrid, visibleFish):
         return self.startASearch(visionGrid, visibleFish)
-        #return self.randomMove(visionGrid)
+
 
     def translateMove(self, curLoc, delta):
         return tuple(map(sum, zip(curLoc, delta)))
@@ -47,20 +50,28 @@ class Fish:
         move = adjacencies[random.randint(0, len(adjacencies) - 1)]
         return move
 
-    # returns a single move along a star search path
+    # Returns a single move along A* search path
+    # Calls the A* search method then uses backtracking to find the next move the fish should make.
     def startASearch(self, visionGrid, visibleFish):
         bestMoves, parentMap = self.aSearch(visionGrid, visibleFish)
         nextMoves = list()
         for move in bestMoves:
             parentMove = parentMap[move.loc]
             nextMove = move.loc
-            while parentMove != self.loc:
+            while parentMove != self.loc: # Backtracking loop
                 nextMove = parentMove
                 parentMove = parentMap[parentMove]
             nextMoves.append(nextMove)
-        choosenMove = nextMoves[random.randint(0, len(nextMoves) - 1)]
+        choosenMove = nextMoves[random.randint(0, len(nextMoves) - 1)] # Arbitrarily decides between multiple equally good paths.
         return choosenMove
 
+    # The A* Search method.
+    # Searches all valid nodes with a depth equal to the fish's vision attribute.
+    # Keeps the best nodes so far and returns them after all nodes are searched. -
+    # - This is usually one node, but may be multiple if they are exactly equal in value + depth
+    # Maintains a parent map that maps a node to its parent. This allows backtracking to find - 
+    # - the next immediate move to move towards the best node found along the optimal path.
+    # This search avoids already visited nodes since the best path to them will be searched first.
     def aSearch(self, visionGrid, visibleFish):
         parentMap = {}
         minFringe = []
@@ -81,19 +92,22 @@ class Fish:
                         heapq.heappush(minFringe, Node(adj, parent.depth + 1, self.heuristic(adj, visionGrid, visibleFish)))
         return bestMoves, parentMap
 
+    # Receives a node location and the fish's vision grid. 
+    # Returns a list of all valid adjacent locations to the received node location
     def findAdjacencies(self, loc, visionGrid):
-        # variables to prevent possible moves from going out of bounds
+        # Variables to prevent possible moves from going out of bounds
         width = len(visionGrid)
         height = len(visionGrid[0])
         allDirections = [self.UP, self.DOWN, self.LEFT, self.RIGHT, self.NORTHEAST, self.NORTHWEST, self.SOUTHEAST, self.SOUTHWEST, (0, 0)]
         adjacencies = list()
         for direction in allDirections:
             adjacent = self.translateMove(loc, direction)
-            # prevent possible moves from going out of bounds
+            # Prevent possible moves from going out of bounds
             if (adjacent[0] >= 0 and adjacent[0] < width and adjacent[1] >= 0 and adjacent[1] < height):
                 adjacencies.append(adjacent)
         return adjacencies
 
+    # Calculates the euclidean distance between two points. Each node is a tuple of integers
     def calc_euclidean_distance(self, node_a, node_b):
         distance = 0
         for a, b in zip(node_a, node_b):
@@ -101,23 +115,27 @@ class Fish:
         distance = pow(distance, 0.5)
         return distance  
 
+    # Calculates the non-euclidean distance between two points where diagonal distances are equal to orthogonal distances.
+    # In simple terms, this is the minimum number of moves a fish must make to get from node a to node b
     def calc_noneuclidean_distance(self, node_a, node_b):
         return max(abs(node_a[0] - node_b[0]), abs(node_a[1] - node_b[1]))
 
+    # Receives a node location (tuple), copy of the grid with only what the fish sees, and a list of all fish the fish can see
+    # Returns a value to estimate the goodness of the location received. 
     def heuristic(self, loc, visionGrid, visibleFish):
         value = 0
         for otherFish in visibleFish:
             distance = self.calc_noneuclidean_distance(loc, otherFish.loc)
             if distance <= self.riskAwareness and otherFish.getTier() > self.getTier():
-                if distance == 0:
+                if distance == 0: 
                     value += (self.riskAwareness + 1)
                 else:
-                    value += (1 / distance) * self.riskAwareness
+                    value += (1 / distance) * self.riskAwareness # The proximity heuristic to avoid dangerous fish. Scales the inverted distance by the fish's riskAwareness attribute
             elif (otherFish.getTier() < self.getTier() or otherFish.fishType == "food"):
                 if distance == 0:
                     value -= (self.vision + 1)
                 else:
-                    value -= (1 / distance) * self.vision
+                    value -= (1 / distance) * self.vision # The proximity heuristic to find edible fish. Scales the inverted distance by the fish's vision attribute
         return value
 
     @staticmethod
@@ -136,6 +154,7 @@ class Fish:
             return "F"
         return "fish"
 
+    #returns a string representation of the fishes attributes.
     def strAttributes(self):
         return "Vision: "+ str(self.vision) + " Speed: " + str(self.speed) + " Risk: " + str(self.riskAwareness) + " Tier: " + str(self.initTier)
 
