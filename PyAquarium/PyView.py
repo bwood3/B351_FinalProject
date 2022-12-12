@@ -28,6 +28,7 @@ class View():
         # to know last blit location of fish within this class store there memory locations in dict
         self.fishPrevLocDict = {}
         self.fishSmoothDict = {}
+        self.trainingTierCaptured = False
 
     # possible move locations on board will be a factor of cells in array/grid
     # const_dist is critical variable allowing us to print sprites in correct location
@@ -47,13 +48,15 @@ class View():
         self.OBJ_SIZE = self.HEIGHT * .067
         self.CORRECTION = self.HEIGHT * .0067
 
-        #greenEel, worm, redCarp <- move these arrays to pyGameObject
-        self.sheet1SpriteLoc = [(3.8, 5.3), (8.2, 2.6), (.9, 1.9)]
+        #greenEel (higher tier), worm (food), redCarp (lower tire), blue fish(equal tier) <- move these arrays to pyGameObject
+        self.sheet1SpriteLoc = [(3.8, 5.3), (8.2, 2.6), (.9, 1.9), (3.8, 4.4)]
         #training fish sheet
         self.westMoves = [(1,3),(1,4),(1,5)]
         self.eastMove = [(2,3),(2,4),(2,5)]
         self.trainingFish = PyFish(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet2.png', self.fps)
-        self.npc = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[2])
+        self.npcLowerTier = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[2])
+        self.npcSameTier = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[3])
+        self.npcHigherTier = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[0])
         self.food = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[1])
 
     def setVisionView(self):
@@ -83,7 +86,16 @@ class View():
             self.grid.blit(self.trainingFish.getFrame(), targetLoc)
             self.displayFishStats(fish, fishIteration, generation)
         elif (fish.fishType == "npc"):
-            self.grid.blit(self.npc.sprite, targetLoc)
+            # lower tier
+            if(fish.initTier < self.trainingTierCaptured):
+                self.grid.blit(self.npcLowerTier.sprite, targetLoc)
+            # higher tier
+            elif(fish.initTier > self.trainingTierCaptured):
+                self.grid.blit(self.npcHigherTier.sprite, targetLoc)
+            # same tier
+            else:
+                self.grid.blit(self.npcSameTier.sprite, targetLoc)
+
         elif (fish.fishType == "food"):
             self.grid.blit(self.food.sprite, targetLoc)
 
@@ -104,6 +116,9 @@ class View():
         self.grid.blit(risk_text, (1, yStart + padding * 2))
         speed_text = self.font.render("Speed: " + str(fish.speed), 1, (0, 0, 0))
         self.grid.blit(speed_text, (1, yStart + padding * 3))
+        fishTier_text = self.font.render("Tier: " + str(fish.initTier), 1, (0, 0, 0))
+        self.grid.blit(fishTier_text, (1, yStart + padding * 4))
+
         #show generation
         gen_text = self.font.render("Generation: " + str(generation), 1, (0, 0, 0))
         self.grid.blit(gen_text, (self.WIDTH - gen_text.get_width() - yStart, yStart))
@@ -186,10 +201,15 @@ class View():
                 self.grid.fill(self.BACKGROUND_COLOR)
                 # print(aquarium)
 
+    #get tier so we know how to blit other fish
+    def getTraininingTier(self, trainingF):
+        if (not self.trainingTierCaptured):
+            self.trainingTierCaptured = trainingF.initTier
+
     #todo this logic will need to be updated with new code
     def displayMain(self):
         generation = 0
-        speedUp = .6
+        speedUp = 1
         wait = int(1000/self.fps/(1+speedUp))
         while (generation < 10):
             scores = []
@@ -215,8 +235,7 @@ class View():
                 fishes.append(i)
                 aquarium = Aquarium(20, fishes)
 
-                while aquarium.lifetime < 101 and i.status == 1:
-
+                while aquarium.lifetime < 100 and i.status == 1:
                     # update fish locations
                     aquarium.updateSim()
                     # slow down tics to viewable rate
@@ -229,6 +248,8 @@ class View():
                     # get type (fish/food) and their locations from backend
                     # this will update each tic of display
                     for fish in aquarium.fishes:
+                        # get tier so we know how to blit other fish
+                        self.getTraininingTier(fish)
                         # for each fish produce n more frames (steps) to target location
                         self.getSteps(fish, self.translateLoc(fish.loc[1], fish.loc[0]), self.fps)
 
@@ -238,12 +259,14 @@ class View():
                         pygame.display.update()
                         pygame.time.wait(1500)
                     else:
-                        # distribute added frames evenly across each fish
+                        # distribute added frames evenly across each fish (this is where we display our fish)
                         self.smoothMove(aquarium.lifetime,self.fps, wait, aquarium, fishIteration, generation)
 
                 # reset fish dictionaries for new generation
                 self.fishPrevLocDict.clear()
                 self.fishSmoothDict.clear()
+                #capture next iteration
+                self.trainingTierCaptured = False
                 i.score += aquarium.lifetime
                 scores.append(i.score)
                 if (i.score > bestScore):

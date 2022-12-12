@@ -28,7 +28,7 @@ class PyFish(GameObject):
         # default direction
         self.direction = "west"
 
-    #eating clip is frame 3
+    # eating clip is at frame 3 (not yet implemented)
     def getFrame(self):
         if(self.direction == "west"):
             clip = self.westMoves[int(self.cycle%2)]
