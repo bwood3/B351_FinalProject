@@ -11,7 +11,6 @@ class View():
         pygame.init()
         self.HEIGHT = viewSize
         self.WIDTH = self.HEIGHT
-
         self.grid_size = grid_size
         #display view
         self.setUpGame()
@@ -78,27 +77,6 @@ class View():
     # take N*N grid and translate its proportional location to py view
     def translateLoc(self, col, row):
         return (col * self.const_dist - self.CORRECTION, row * self.const_dist - self.CORRECTION)
-
-    #todo old method can delete
-    def displayObject(self, loc, type, vision = None):
-        row = loc[0]
-        col = loc[1]
-
-        #training fish
-        if type == "training":
-            #location translate based on grid/array size
-            self.grid.blit(self.trainingFish.getFrame(), self.translateLoc(col, row))
-            pygame.draw.circle(self.grid, self.circleColor, (col * self.const_dist + (self.const_dist/1.8),
-                                row * self.const_dist + (self.const_dist/1.3)), self.CIRCLE_RADIUS * vision, self.CIRCLE_WIDTH)
-
-        #food
-        elif type == "food":
-            # location translate based on grid/array size
-            self.grid.blit(self.food.sprite, self.translateLoc(col,row))
-
-        #enmey
-        elif type == "npc":
-            self.grid.blit(self.npc.sprite, self.translateLoc(col,row))
 
     def smoothBlit(self, fish, targetLoc, fishIteration =None, generation=None):
         if (fish.fishType == "training"):
