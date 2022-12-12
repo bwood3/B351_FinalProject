@@ -28,7 +28,7 @@ class Evolution:
     # Since the sum of all fishs' weights is 1, the distribution of fish weights -
     # - is effectively a cumulative distribution function and can be calculated -
     # - as such to determine which fish is picked as the parent.
-    # The recieved list of fish (prevGen) and weights for fish (weights) are in -
+    # The received list of fish (prevGen) and weights for fish (weights) are in -
     # - respective order to each other.
     def pickParent(self, prevGen, weights):
         pick = random.random()

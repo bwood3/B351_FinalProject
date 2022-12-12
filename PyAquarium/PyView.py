@@ -82,9 +82,11 @@ class View():
         return (col * self.const_dist - self.CORRECTION, row * self.const_dist - self.CORRECTION)
 
     def smoothBlit(self, fish, targetLoc, fishIteration =None, generation=None):
+
         if (fish.fishType == "training"):
             self.grid.blit(self.trainingFish.getFrame(), targetLoc)
             self.displayFishStats(fish, fishIteration, generation)
+
         elif (fish.fishType == "npc"):
             # lower tier
             if(fish.initTier < self.trainingTierCaptured):
@@ -206,17 +208,28 @@ class View():
         if (fish.fishType == "training" and not self.trainingTierCaptured):
             self.trainingTierCaptured = fish.initTier
 
+    def resetGameVars(self):
+        # reset fish dictionaries for new generation
+        self.fishPrevLocDict.clear()
+        self.fishSmoothDict.clear()
+        # capture next iteration
+        self.trainingTierCaptured = False
+        self.speedUp = 1
+
     #todo this logic will need to be updated with new code
     def displayMain(self):
         generation = 0
-        speedUp = 1
-        wait = int(1000/self.fps/(1+speedUp))
-        while (generation < 10):
+        self.speedUp = 1
+        wait = int(1000/self.fps/(1+self.speedUp))
+        # aquarium demonstration variables (Note: can pres -> or <- to slow/speed up a generation)
+        generationToView = [0, 10]
+        numOfGenerations = 10
+        while (generation < numOfGenerations):
             scores = []
             bestFish = None
             bestScore = -1
             fishIteration = -1
-            for i in self.training_fishes:
+            for trainingFish in self.training_fishes:
                 fishIteration += 1
                 fishes = []
                 for j in range(0, 10):
@@ -232,47 +245,67 @@ class View():
                 f = Fish(loc, 2, 2, 0, 20, "npc")  # adds a predator npc
                 fishes.append(f)
                 # i.score = 100
-                fishes.append(i)
+                fishes.append(trainingFish)
                 aquarium = Aquarium(20, fishes)
 
-                while aquarium.lifetime < 100 and i.status == 1:
+                while aquarium.lifetime < 100 and trainingFish.status == 1:
                     # update fish locations
                     aquarium.updateSim()
-                    # slow down tics to viewable rate
-                    # if press exit button
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                            pygame.quit()
-                            sys.exit()
 
-                    # get type (fish/food) and their locations from backend
-                    # this will update each tic of display
-                    for fish in aquarium.fishes:
-                        # get tier so we know how to blit other fish
-                        self.getTraininingTier(fish)
-                        # for each fish produce n more frames (steps) to target location
-                        self.getSteps(fish, self.translateLoc(fish.loc[1], fish.loc[0]), self.fps)
+                    if(generation in generationToView):
+                        # slow down tics to viewable rate
+                        # if press exit button
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                sys.exit()
 
-                    # if training fish has been eaten, show it
-                    if (i.status == 0):
-                        self.trainingFishEaten(i, fishIteration, generation)
-                        pygame.display.update()
-                        pygame.time.wait(1500)
-                    else:
+                            #allow speed up of current generation
+                            if event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_RIGHT:
+                                    self.speedUp += 10
+                                    wait = int(1000/self.fps/(1+self.speedUp))
+                                if event.key == pygame.K_LEFT:
+                                    self.speedUp -= 10
+                                    if (self.speedUp > 0):
+                                        wait = int(1000 / self.fps / (1 + self.speedUp))
+                                    else:
+                                        self.speedUp = 1
+
+                            # get type (fish/food) and their locations from backend
+                        # this will update each tic of display
+                        for fish in aquarium.fishes:
+                            # get tier so we know how to blit other fish
+                            self.getTraininingTier(fish)
+                            # for each fish produce n more frames (steps) to target location
+                            self.getSteps(fish, self.translateLoc(fish.loc[1], fish.loc[0]), self.fps)
+
                         # distribute added frames evenly across each fish (this is where we display our fish)
-                        self.smoothMove(aquarium.lifetime,self.fps, wait, aquarium, fishIteration, generation)
+                        self.smoothMove(aquarium.lifetime, self.fps, wait, aquarium, fishIteration, generation)
 
-                # reset fish dictionaries for new generation
-                self.fishPrevLocDict.clear()
-                self.fishSmoothDict.clear()
-                #capture next iteration
-                self.trainingTierCaptured = False
-                i.score += aquarium.lifetime
-                scores.append(i.score)
-                if (i.score > bestScore):
-                    bestFish = i
-                    bestScore = i.score
+                        # if training fish has been eaten, show it
+                        if (trainingFish.status == 0):
+                            self.trainingFishEaten(trainingFish, fishIteration, generation)
+                            pygame.display.update()
+                            pygame.time.wait(int(1500/self.speedUp))
 
+                if(generation in generationToView):
+                    self.resetGameVars()
+
+                # capture data from cycle each iteration
+                trainingFish.score += aquarium.lifetime
+                scores.append(trainingFish.score)
+                if (trainingFish.score > bestScore):
+                    bestFish = trainingFish
+                    bestScore = trainingFish.score
+
+            # from our last 10 cycles who had the best score:
+            if(generation not in generationToView):
+                print("Best fish had: " + bestFish.strAttributes())
+                print("With score: " + str(bestScore))
+                # print(scores)
+                print("Average: " + str(sum(scores) / 10))
+            # crossbreed
             self.training_fishes = self.evolution.createGeneration(self.training_fishes)
             generation += 1
 

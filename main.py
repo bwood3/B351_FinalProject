@@ -88,7 +88,7 @@ def captureData(bestFish, bestScore, average):
 
 if __name__ == '__main__':
     # argument is # of generations
-    # runConsoleSim(30)
-    runPySim()
+    runConsoleSim(30)
+    # runPySim()
 
 
