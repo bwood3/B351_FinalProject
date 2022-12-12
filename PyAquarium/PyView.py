@@ -202,9 +202,9 @@ class View():
                 # print(aquarium)
 
     #get tier so we know how to blit other fish
-    def getTraininingTier(self, trainingF):
-        if (not self.trainingTierCaptured):
-            self.trainingTierCaptured = trainingF.initTier
+    def getTraininingTier(self, fish):
+        if (fish.fishType == "training" and not self.trainingTierCaptured):
+            self.trainingTierCaptured = fish.initTier
 
     #todo this logic will need to be updated with new code
     def displayMain(self):
