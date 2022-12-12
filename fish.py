@@ -125,7 +125,7 @@ class Fish:
     def heuristic(self, loc, visionGrid, visibleFish):
         value = 0
         for otherFish in visibleFish:
-            distance = self.calc_noneuclidean_distance(loc, otherFish.loc)
+            distance = self.calc_euclidean_distance(loc, otherFish.loc)
             if distance <= self.riskAwareness and otherFish.getTier() > self.getTier():
                 if distance == 0: 
                     value += (self.riskAwareness + 1)

@@ -77,6 +77,11 @@ class View():
         self.evolution = Evolution(self.mutationChance, self.origin, self.maxAttributePoints)
         self.training_fishes = [Fish.randomFishGenerator(self.origin, "training", self.maxAttributePoints) for i in range(11)]
 
+        #showning attribute of one of our best fish
+        # 5,5,4,7
+        self.overRideTrainingFish =[Fish(self.origin, 5, 5, 4, 7, "training"), Fish(self.origin, 5, 5, 4, 7, "training"),
+                                    Fish(self.origin, 5, 5, 4, 7, "training")]
+
     # take N*N grid and translate its proportional location to py view
     def translateLoc(self, col, row):
         return (col * self.const_dist - self.CORRECTION, row * self.const_dist - self.CORRECTION)
@@ -89,10 +94,10 @@ class View():
 
         elif (fish.fishType == "npc"):
             # lower tier
-            if(fish.initTier < self.trainingTierCaptured):
+            if(fish.getTier() < self.trainingTierCaptured):
                 self.grid.blit(self.npcLowerTier.sprite, targetLoc)
             # higher tier
-            elif(fish.initTier > self.trainingTierCaptured):
+            elif(fish.getTier() > self.trainingTierCaptured):
                 self.grid.blit(self.npcHigherTier.sprite, targetLoc)
             # same tier
             else:
@@ -206,7 +211,7 @@ class View():
     #get tier so we know how to blit other fish
     def getTraininingTier(self, fish):
         if (fish.fishType == "training" and not self.trainingTierCaptured):
-            self.trainingTierCaptured = fish.initTier
+            self.trainingTierCaptured = fish.getTier()
 
     def resetGameVars(self):
         # reset fish dictionaries for new generation
@@ -266,11 +271,11 @@ class View():
                                     self.speedUp += 10
                                     wait = int(1000/self.fps/(1+self.speedUp))
                                 if event.key == pygame.K_LEFT:
-                                    self.speedUp -= 10
-                                    if (self.speedUp > 0):
-                                        wait = int(1000 / self.fps / (1 + self.speedUp))
-                                    else:
-                                        self.speedUp = 1
+                                    self.speedUp =1
+                                    wait = int(1000 / self.fps / (1 + self.speedUp))
+                                if event.key == pygame.K_UP:
+                                    self.training_fishes = self.overRideTrainingFish
+                                    self.displayMain()
 
                             # get type (fish/food) and their locations from backend
                         # this will update each tic of display

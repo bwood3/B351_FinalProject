@@ -85,10 +85,9 @@ def captureData(bestFish, bestScore, average):
         writer_object.writerow(data)
         f_object.close()
 
-
 if __name__ == '__main__':
     # argument is # of generations
-    runConsoleSim(30)
-    # runPySim()
+    # runConsoleSim(30)
+    runPySim()
 
 
