@@ -11,21 +11,23 @@ def runPySim():
     displaySize = 750
     view = View(gridSize, displaySize)
 
-def runConsoleSim():
+def runConsoleSim(n, collectData = False):
     print("Running Main Console")
 
     # FOR COLLECTING DATA IN CSV FILE ONLY
-    # initCSV()
-    # collectingData = True
+    if(collectData):
+        initCSV()
 
     origin = (10, 10)  # starting point for the training fish
     mutationChance = 0.02
     maxAttributePoints = 15
+    #locations that our fish may spawn
     possibleX = [1, 3, 5, 7, 13, 15, 17, 19]
     possibleY = [1, 3, 5, 7, 13, 15, 17, 19]
     evolution = Evolution(mutationChance, origin, maxAttributePoints)
     training_fishes = [Fish.randomFishGenerator(origin, "training", maxAttributePoints) for i in range(10)]
-    while(1):
+    generation = 0
+    while(generation < n):
         scores = []
         bestFish = None
         bestScore = -1
@@ -53,6 +55,7 @@ def runConsoleSim():
             if(i.score > bestScore):
                 bestFish = i
                 bestScore = i.score
+        generation+= 1
 
         print("Best fish had: " + bestFish.strAttributes())
         print("With score: " + str(bestScore))
@@ -61,8 +64,8 @@ def runConsoleSim():
         training_fishes = evolution.createGeneration(training_fishes)
 
         # for collecting data into csv file only
-        # if(collectingData):
-        #     captureData(bestFish, str(bestScore), str(sum(scores) / 10))
+        if(collectData):
+            captureData(bestFish, str(bestScore), str(sum(scores) / 10))
     print("Sim over")
 
 def initCSV():
@@ -84,7 +87,8 @@ def captureData(bestFish, bestScore, average):
 
 
 if __name__ == '__main__':
-    runConsoleSim()
-    # runPySim()
+    # argument is # of generations
+    # runConsoleSim(30)
+    runPySim()
 
 

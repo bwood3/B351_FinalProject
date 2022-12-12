@@ -143,6 +143,7 @@ class Fish:
         attributes = [0, 0, 0, 0] #vision, speed, riskAwareness, initTier
         for i in range(totalPoints - 1):
             attributes[random.randint(0, 3)] += 1
+        # return Fish(loc, attributes[0], 1, attributes[2], attributes[3], fishType)
         return Fish(loc, attributes[0], attributes[1], attributes[2], attributes[3], fishType)
 
     def __repr__(self):
