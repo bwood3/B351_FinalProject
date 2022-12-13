@@ -5,12 +5,14 @@ from PyAquarium.PyView import View
 import random
 from csv import writer
 
+#view training via pygame
 def runPySim():
     print("Running Main Pygame")
     gridSize = 20 # this can be viewed as equivalent to pixel count
     displaySize = 750
     view = View(gridSize, displaySize)
 
+# train aquarium
 def runConsoleSim(n, collectData = False):
     print("Running Main Console")
 
@@ -86,7 +88,7 @@ def captureData(bestFish, bestScore, average):
         f_object.close()
 
 if __name__ == '__main__':
-    # argument is # of generations
+    # # argument is # of generations
     # runConsoleSim(30)
     runPySim()
 

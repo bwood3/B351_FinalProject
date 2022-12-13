@@ -51,8 +51,6 @@ class View():
         #greenEel (higher tier), worm (food), redCarp (lower tire), blue fish(equal tier) <- move these arrays to pyGameObject
         self.sheet1SpriteLoc = [(3.8, 5.3), (8.2, 2.6), (.9, 1.9), (3.8, 4.4)]
         #training fish sheet
-        self.westMoves = [(1,3),(1,4),(1,5)]
-        self.eastMove = [(2,3),(2,4),(2,5)]
         self.trainingFish = PyFish(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet2.png', self.fps)
         self.npcLowerTier = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[2])
         self.npcSameTier = PyFood(self.OBJ_SIZE, self.OBJ_SIZE, 'PyAquarium/Sprites/FishSheet1.png', self.sheet1SpriteLoc[3])
@@ -151,12 +149,8 @@ class View():
     # for efficiency, the training algorithm spawns fish into there next grid location while moving -
     # - additionally fish with high speed may jump grid location -
     # - this algorithm smooths the gap between jumps (Note: it is import fish Dict is update after this method)
-    # STACK -> [t1, x1, y1, z1, t2, x2, y2, z2, t3, x3, y3, z3] -
-    # - Leave n-1 open space between each t (where n is number of fish in aquarium)
-    # Alternative to above (method used):
-    # store dictionary of moves for each fish id (moves is a list with the split frames)
-    # create x points between between current and target location
-    # loop through them in succession
+    # Method description: store dictionary of moves for each fish id (moves is a list with the split frames)
+    # create x points between between current and target location loop through them in succession
     def getSteps(self, fish, targetLoc, nFrames = 3):
         hashableID = id(fish)
         prevLoc = self.fishPrevLocDict.get(hashableID)
@@ -221,12 +215,13 @@ class View():
         self.trainingTierCaptured = False
         self.speedUp = 1
 
-    #todo this logic will need to be updated with new code
+    #NOTE: this logic will need to be updated with new code
     def displayMain(self):
         generation = 0
         self.speedUp = 1
         wait = int(1000/self.fps/(1+self.speedUp))
         # aquarium demonstration variables (Note: can pres -> or <- to slow/speed up a generation)
+        # user can also press up arrow to skip to generation with best attributes
         generationToView = [0, 10]
         numOfGenerations = 10
         while (generation < numOfGenerations):
