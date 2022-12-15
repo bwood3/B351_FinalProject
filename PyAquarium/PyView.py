@@ -216,6 +216,7 @@ class View():
         self.speedUp = 1
 
     #NOTE: this logic will need to be updated with new code
+    # This simply contains code from our main file updated for pygame display
     def displayMain(self):
         generation = 0
         self.speedUp = 1

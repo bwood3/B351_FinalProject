@@ -20,6 +20,7 @@ def runConsoleSim(n, collectData = False):
     if(collectData):
         initCSV()
 
+    # TRAINING CODE THAT INTEGRATES OUR VARIOUS CLASSES HERE
     origin = (10, 10)  # starting point for the training fish
     mutationChance = 0.02
     maxAttributePoints = 15
